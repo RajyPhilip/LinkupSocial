@@ -1,7 +1,7 @@
+const Post = require('../models/Post');
 const User = require('../models/User');
 
 //REGISTER
-
 exports.register = async(req,res)=>{
     try {
         const {name,email,password} = req.body ;
@@ -39,8 +39,8 @@ exports.register = async(req,res)=>{
         }) ;
     }
 }
-//LOGIN 
 
+//LOGIN 
 module.exports.login = async (req, res, next) => {
     try {
         const {email, password} = req.body;
@@ -73,8 +73,8 @@ module.exports.login = async (req, res, next) => {
         });
     }
 }; 
-//LOGOUT 
 
+//LOGOUT 
 exports.logout = async (req,res)=>{
     try {
         res.status(200).cookie('token',null,{expires:new Date(Date.now()),httpOnly:true}).json({
@@ -90,9 +90,7 @@ exports.logout = async (req,res)=>{
 }
 
 //Follow another user
-
-exports
-.followUser = async (req,res)=>{
+exports.followUser = async (req,res)=>{
     try {
         const userToFollow = await User.findById(req.params.id);
         const loggedInUser = await User.findById(req.user._id);
@@ -128,6 +126,161 @@ exports
             });
         }
         
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
+// UPDATE PASSWORD 
+exports.updatePassword = async (req,res)=>{
+    try {
+        const {oldPassword,newPassword} = req.body ;
+        if(!oldPassword || !newPassword){
+            return res.status(400).json({
+                success:false,
+                message:"Please provide old and new password"
+            })
+        }
+        const user = await User.findById(req.user._id).select('+password');
+        const isMatched = await user.matchPassword(oldPassword);
+        if(!isMatched){
+            return res.status(400).json({
+                success:false,
+                message:"Incorrect Old password"
+            });
+        }
+        user.password = newPassword ; 
+        await user.save();
+        res.status(200).json({
+            success:true,
+            message:"Password Updated"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
+// UPDATE PROFILE
+exports.updateProfile = async (req,res)=>{
+    try {
+        const {name,email} = req.body ;
+        const user = await User.findById(req.user._id);
+        if(name){
+            user.name=name
+        }
+        if(email){
+            user.email=email
+        }
+        //user avatar 
+        await user.save();
+        res.status(200).json({
+            success:true,
+            message:"Profile Updated"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+//DELETE PROFILE
+exports.deleteProfile = async (req,res)=>{
+    try {
+        const user  = await User.findById(req.user._id);
+        const posts = user.posts ;
+        const followers = user.followers ;
+        const following = user.following
+        const userID = user._id
+        await user.deleteOne() ;
+        //logging out user after deleting profile
+        res.cookie('token',null,{
+            expires:new Date(Date.now()),
+            httpOnly:true
+        });
+
+        //removing user from followers following
+        for(let i = 0 ;i < followers.length;i++) {
+            const follower = await User.findById(followers[i]);
+            const index = follower.following.indexOf(userID);
+            follower.following.splice(index,1);
+            await follower.save()
+        }
+        //removing user from following's followers
+        for(let i = 0 ;i < following.length;i++) {
+            const follows = await User.findById(following[i]);
+            const index = follows.followers.indexOf(userID);
+            follows.followers.splice(index,1);
+            await follows.save()
+        }
+
+        //delete all posts of the user 
+        for(let i = 0 ;i < posts.length;i++) {
+            const post = await Post.findById(posts[i]);
+            await post.deleteOne();
+        }
+        res.status(200).json({
+            success:true,
+            message:"Profile Deleted"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+
+//MYPROFILE DATA
+exports.myProfile = async (req,res)=>{
+    try {
+        const user = await User.findById(req.user._id).populate('posts');
+        return res.status(200).json({
+            success:true,
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+// GET USER PROFILE 
+exports.getUserProfile = async (req,res)=>{
+    try {
+        const user = await User.findById(req.params.id).populate('posts');
+        if(!user){
+            return res.status(404).json({
+                success:false,
+                message:"User not found"
+            });
+        }
+        res.status(200).json({
+            success:true,
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+//GET ALL USERS
+exports.getAllUsers = async (req,res)=>{
+    try {
+        const users = await User.find({});
+        res.status(200).json({
+            success:true,
+            users
+        })
     } catch (error) {
         res.status(500).json({
             success:false,
