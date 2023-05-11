@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,13 @@
   },
   "homepage": "https://github.com/RajyPhilip/LinkupSocial#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^7.1.0"
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.1.0",
+    "parser": "^0.1.4"
   }
 }
