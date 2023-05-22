@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import{useDispatch} from 'react-redux';
 import './Home.css';
 import User from '../User/User';
 import Post from '../Post/Post';
+import { getFollowingPosts } from '../../Actions/User';
 
 const Home = () => {
+
+  const dispatch = useDispatch();
+
+  // functions 
+  useEffect(()=>{
+    dispatch(getFollowingPosts());
+  },[]);
+  
   return (
     <div className='home'>
         <div className='homeleft'>
