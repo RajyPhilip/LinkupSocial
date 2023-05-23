@@ -61,3 +61,21 @@ export const getFollowingPosts =()=> async(dispatch)=>{
         })
     }
 }
+//get all users
+export const getAllUsers =()=> async(dispatch)=>{
+    try {
+        dispatch({
+            type:"allUserRequest",
+        });
+        const {data}= await axios.get('api/v1/users');
+        dispatch({
+            type:"allUserSuccess",
+            payload:data.users,
+        });
+    } catch (error) {
+        dispatch({
+            type:"allUserFailure",
+            payload: error.response.data.message
+        })
+    }
+}

@@ -1,31 +1,45 @@
 import React, { useEffect } from 'react';
-import{useDispatch} from 'react-redux';
+import{useDispatch, useSelector} from 'react-redux';
 import './Home.css';
 import User from '../User/User';
 import Post from '../Post/Post';
-import { getFollowingPosts } from '../../Actions/User';
+import { getAllUsers, getFollowingPosts } from '../../Actions/User';
+import Loader from '../Loader/Loader';
+import { Typography } from '@mui/material';
 
 const Home = () => {
 
   const dispatch = useDispatch();
-
+  const {loading,posts,error} = useSelector(state=>state.postOfFollowing) ;
+  const {users,loading:usersLoading}=useSelector(state=>state.allUsers) ;
+  
   // functions 
   useEffect(()=>{
     dispatch(getFollowingPosts());
-  },[]);
-  
-  return (
-    <div className='home'>
+    dispatch(getAllUsers());
+  },[dispatch]);
+
+  return loading===true || usersLoading===true ? (
+    <Loader />) : (
+      <div className='home'>
         <div className='homeleft'>
-          <Post postImage={"https://plus.unsplash.com/premium_photo-1683639447442-164725904c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60"} ownerName={"RAjyphilip"} caption={"this is a sample post"}   />
+          {
+            posts && posts.length > 0 ? posts.map((post)=>(
+              <Post key={post._id} postId={post._id}  postImage={"post.image.url"} likes={post.likes} comments={post.comments} ownerImage={'post.owner.avatar.url'} ownerName={post.owner.name} ownerId={post.owner._id} caption={post.caption}  />
+            )) :<Typography variant='h5'>No posts yet</Typography>
+          }
         </div>
 
         <div className='homeright'>
-          <User userId={"user._id"} name={"user.name"} avatar={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzTgqkIW1GcSvOy7Dg34gKaPsOq_8a6-aEwQ&usqp=CAU"} />
+          {
+            users && users.length > 0 ? users.map((user) => (
+              <User key={user._id} userId={user._id} name={user.name} avatar={user.avatar.url} />
+            )): <Typography>No Users Yet</Typography>
+          }
         </div>
 
     </div>
-  )
+    )
 }
 
 export default Home ;

@@ -30,7 +30,7 @@ const Post = ({postId,caption,postImage,likes=[],comments=[],ownerImage,ownerNam
             <Typography fontWeight={100} color="rgba(0,0,0,0.582" style={{alignSelf:"center"}} >{caption}</Typography>
         </div>
         <button className='post-like-btn'>
-            <Typography>5 likes</Typography>    
+            <Typography>{likes + 1}</Typography>    
         </button>
         <div className="postFooter">
             <Button onClick={handleLike}>
