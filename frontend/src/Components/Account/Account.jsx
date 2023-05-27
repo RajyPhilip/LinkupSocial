@@ -60,7 +60,7 @@ const Account = () => {
         <div className="accountleft">
           {
             posts && posts.length > 0 ? posts.map(post =>(
-              <Post key={post._id} postId={post._id}  postImage={"post.image.url"} likes={post.likes} comments={post.comments} ownerImage={'post.owner.avatar.url'} ownerName={post.owner.name} ownerId={post.owner._id} caption={post.caption}   />
+              <Post key={post._id} postId={post._id}  postImage={post.image.url} likes={post.likes} comments={post.comments} ownerImage={'post.owner.avatar.url'} ownerName={post.owner.name} ownerId={post.owner._id} caption={post.caption} isAccount={true} isDelete={true}  />
             )) : <Typography variant='h2'>You have not posted yet </Typography>
           }
 

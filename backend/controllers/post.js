@@ -1,14 +1,19 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
+const cloudinary = require('cloudinary');
 
 //CREATE POST
 exports.createPost = async (req,res)=>{
     try {
+        //cloudinary uploadthen will put in the public id and url ;
+        const myCloud = await cloudinary.v2.uploader.upload(req.body.image ,{
+            folder:'linkup_posts'
+        });
         const newPostData = {
             caption:req.body.caption,
             image:{
-                public_id:"req.body.public_id",
-                url:"req.body.url"
+                public_id:myCloud.public_id,
+                url:myCloud.secure_url
             },
             owner:req.user._id
         }
@@ -16,12 +21,14 @@ exports.createPost = async (req,res)=>{
         
         // now putting the new post id in users posts array
         const user = await User.findById(req.user._id);
-        user.posts.push(newPost._id);
+        user.posts.unshift(newPost._id);
         await user.save();
-        
+        console.log('successfull',newPost)
+
         res.status(201).json({
             success:true,
             post:newPost,
+            message:"Post created"
         })
 
     } catch (error) {
@@ -48,6 +55,7 @@ exports.deletePost = async (req,res)=>{
                 message:"Unauthorised"
             })
         }
+        await cloudinary.v2.uploader.destroy(post.image.public_id);
         await post.deleteOne() ;
         const user = await User.findById(req.user._id);
         const index = user.posts.indexOf(req.params.id);

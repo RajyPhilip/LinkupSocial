@@ -8,6 +8,7 @@ import  Login  from './Components/Login/Login';
 import { loadUser } from './Actions/User';
 import Home from './Components/Home/Home';
 import Account from './Components/Account/Account';
+import NewPost from './Components/NewPost/NewPost';
 
 function App() {
 
@@ -16,13 +17,15 @@ function App() {
 
   useEffect(()=>{
     dispatch(loadUser())
-  },[]);
+  },[dispatch]);
   return (
     <Router>
       {isAuthenticated && <Header />}
         <Routes>
           <Route path='/' element={ isAuthenticated ? <Home /> : <Login />} />
           <Route path='/account' element={ isAuthenticated ? <Account /> : <Login />} />
+          <Route path='/newpost' element={ isAuthenticated ? <NewPost /> : <Login />} />
+
         </Routes>
     </Router>
   );
