@@ -1,5 +1,29 @@
 import axios from'axios' ;
 
+//Register user
+export const registerUser = (name,email,password,avatar)=> async (dispatch)=>{
+    try {
+        dispatch({
+            type:"RegisterRequest"
+        })
+        const {data}  = await axios.post('/api/v1/register',{name,email,password,avatar},{
+            headers:{
+                "Content-Type":"application/json"
+            }
+        });
+        dispatch({
+            type:"RegisterSuccess",
+            payload:data.user
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"RegisterFailure",
+            payload:error.response.data.message
+        })
+    }
+}
+
 //login user
 export const loginUser = (email,password)=> async (dispatch)=>{
     try {

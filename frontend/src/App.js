@@ -9,6 +9,7 @@ import { loadUser } from './Actions/User';
 import Home from './Components/Home/Home';
 import Account from './Components/Account/Account';
 import NewPost from './Components/NewPost/NewPost';
+import Register from './Components/Register/Register';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
       {isAuthenticated && <Header />}
         <Routes>
           <Route path='/' element={ isAuthenticated ? <Home /> : <Login />} />
+          <Route path='/register' element={ isAuthenticated ? <Account /> : <Register />} />
           <Route path='/account' element={ isAuthenticated ? <Account /> : <Login />} />
           <Route path='/newpost' element={ isAuthenticated ? <NewPost /> : <Login />} />
 

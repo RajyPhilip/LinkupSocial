@@ -1,10 +1,12 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
+const cloudinary = require('cloudinary');
 
 //REGISTER
 exports.register = async(req,res)=>{
     try {
-        const {name,email,password} = req.body ;
+
+        const {name,email,password,avatar} = req.body ;
         let user = await User.findOne({email});
         if(user){
             return res.status(400).json({
@@ -12,11 +14,14 @@ exports.register = async(req,res)=>{
                 message:"User already exists"
             })
         }
+        const myCloud = await cloudinary.v2.uploader.upload(avatar,{
+            folder:'linkup_avatars'
+        })
         user = await User.create({
             name,email,password,
             avatar:{
-                public_id:"sample_id",
-                url:"sample url" 
+                public_id:myCloud.public_id,
+                url:myCloud.secure_url 
             }
         })
         const token = await user.generateToken();
