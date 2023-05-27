@@ -87,7 +87,6 @@ const Account = () => {
             </div>
             <Button variant='contained' onClick={logoutHandler} >Logout</Button>
             <Link to='/update/profile'>Edit Profile</Link>
-            <Link to='/update/password'>Change Password</Link>
             <Button variant='text' style={{color:"red",margin:"2vmax"}} >Delete My PROFILe</Button>
 
             <Dialog open={followersToggle} onClose={()=>setFollowersToggle(!followersToggle)} >

@@ -174,7 +174,7 @@ exports.updatePassword = async (req,res)=>{
 // UPDATE PROFILE
 exports.updateProfile = async (req,res)=>{
     try {
-        const {name,email} = req.body ;
+        const {name,email,avatar} = req.body ;
         const user = await User.findById(req.user._id);
         if(name){
             user.name=name
@@ -182,7 +182,14 @@ exports.updateProfile = async (req,res)=>{
         if(email){
             user.email=email
         }
-        //user avatar 
+        if(avatar){
+            await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+            const myCloud = await cloudinary.v2.uploader.upload(avatar,{
+                folder:'linkup_avatars'
+            })
+            user.avatar.public_id = myCloud.public_id ;
+            user.avatar.url = myCloud.secure_url ;
+        }
         await user.save();
         res.status(200).json({
             success:true,
