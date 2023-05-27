@@ -44,7 +44,7 @@ exports.register = async(req,res)=>{
 module.exports.login = async (req, res, next) => {
     try {
         const {email, password} = req.body;
-        const user = await User.findOne({ email: email }).select('+password') ;
+        const user = await User.findOne({ email: email }).select('+password').populate('posts followers following') ;
         if(!user) return res.status(400).json({
                 success:false,
                 message: 'User not found'
@@ -240,7 +240,7 @@ exports.deleteProfile = async (req,res)=>{
 //MYPROFILE DATA
 exports.myProfile = async (req,res)=>{
     try {
-        const user = await User.findById(req.user._id).populate('posts');
+        const user = await User.findById(req.user._id).populate('posts followers following');
         return res.status(200).json({
             success:true,
             user
@@ -255,7 +255,7 @@ exports.myProfile = async (req,res)=>{
 // GET USER PROFILE 
 exports.getUserProfile = async (req,res)=>{
     try {
-        const user = await User.findById(req.params.id).populate('posts');
+        const user = await User.findById(req.params.id).populate('posts followers following');
         if(!user){
             return res.status(404).json({
                 success:false,
@@ -281,6 +281,26 @@ exports.getAllUsers = async (req,res)=>{
             success:true,
             users
         })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+//GET ALL USERS
+exports.getMyPosts = async (req,res)=>{
+    try {
+        const user = await User.findById(req.user._id).populate('posts');
+        const posts= [] ;
+        for(let i = 0 ;i <user.posts.length ;i++){
+            const post = await Post.findById(user.posts[i]).populate('likes comments.user');
+            posts.push(post);
+        }
+        res.status(200).json({
+            success:true,
+            posts
+        });
     } catch (error) {
         res.status(500).json({
             success:false,

@@ -105,7 +105,7 @@ const Post = ({postId,caption,postImage,likes=[],comments=[],ownerImage,ownerNam
                 </form>
                 {
                     comments.length > 0 ? comments.map((item)=>(
-                        <CommentCard userId={item.user._id} name={item.user.name} avatar={item.user.avatar.url} comment={item.comment} commentId={item._id} postId={postId} isAccount={isAccount} />
+                        <CommentCard key={item._id} userId={item.user._id} name={item.user.name} avatar={item.user.avatar.url} comment={item.comment} commentId={item._id} postId={postId} isAccount={isAccount} />
                     )):<Typography>No comments yet</Typography>
                 }
             </div>

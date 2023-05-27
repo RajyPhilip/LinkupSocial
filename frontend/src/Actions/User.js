@@ -23,6 +23,26 @@ export const loginUser = (email,password)=> async (dispatch)=>{
         })
     }
 }
+//logout user
+export const logoutUser = ()=> async (dispatch)=>{
+    try {
+        dispatch({
+            type:"LogoutUserRequest"
+        })
+        const {data}  = await axios.get('/api/v1/logout');
+
+        dispatch({
+            type:"LogoutUserSuccess",
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"LogoutUserFailure",
+            payload:error.response.data.message
+        })
+    }
+}
+
 
 //load user 
 export const loadUser = ()=> async (dispatch)=>{
@@ -75,6 +95,24 @@ export const getAllUsers =()=> async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"allUserFailure",
+            payload: error.response.data.message
+        })
+    }
+}
+//posts of the current user 
+export const getMyPosts =()=> async(dispatch)=>{
+    try {
+        dispatch({
+            type:"myPostsRequest",
+        });
+        const {data}= await axios.get('api/v1/my/posts');
+        dispatch({
+            type:"myPostsSuccess",
+            payload:data.posts,
+        });
+    } catch (error) {
+        dispatch({
+            type:"myPostsFailure",
             payload: error.response.data.message
         })
     }

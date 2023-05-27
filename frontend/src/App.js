@@ -7,6 +7,7 @@ import Header from './Components/Header/Header';
 import  Login  from './Components/Login/Login';
 import { loadUser } from './Actions/User';
 import Home from './Components/Home/Home';
+import Account from './Components/Account/Account';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
       {isAuthenticated && <Header />}
         <Routes>
           <Route path='/' element={ isAuthenticated ? <Home /> : <Login />} />
+          <Route path='/account' element={ isAuthenticated ? <Account /> : <Login />} />
         </Routes>
     </Router>
   );
