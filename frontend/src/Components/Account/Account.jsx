@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
-import {getAllUsers, getFollowingPosts, getMyPosts, logoutUser} from '../../Actions/User' ;
+import {deleteMyProfile, getAllUsers, getFollowingPosts, getMyPosts, logoutUser} from '../../Actions/User' ;
 import './Account.css';
 import Loader from '../Loader/Loader';
 import Post from '../Post/Post';
@@ -15,9 +15,9 @@ const Account = () => {
   const alert=useAlert();
 
   //states
-  const {user,loading:userLoading} = useSelector((state)=> state.user);
+  const {user,loading:userLoading,} = useSelector((state)=> state.user);
   const {loading,error,posts} = useSelector((state)=> state.myPosts);
-  const {error:likeError,message} = useSelector((state)=>state.like);
+  const {error:likeError,message,loading:deleteLoading} = useSelector((state)=>state.like);
 
   const [followersToggle,setFollowersToggle] = useState(false);
   const [followingToggle,setFollowingToggle] = useState(false);
@@ -30,6 +30,10 @@ const Account = () => {
     alert.success("Logged out Successfully");
   }
 
+  const deleteProfileHandler = async()=>{
+    await dispatch(deleteMyProfile());
+    dispatch(logoutUser());
+  }
 
 
   useEffect(()=>{
@@ -87,7 +91,7 @@ const Account = () => {
             </div>
             <Button variant='contained' onClick={logoutHandler} >Logout</Button>
             <Link to='/update/profile'>Edit Profile</Link>
-            <Button variant='text' style={{color:"red",margin:"2vmax"}} >Delete My PROFILe</Button>
+            <Button disabled={deleteLoading} onClick={deleteProfileHandler} variant='text' style={{color:"red",margin:"2vmax"}} >Delete My PROFILe</Button>
 
             <Dialog open={followersToggle} onClose={()=>setFollowersToggle(!followersToggle)} >
             <div className="DialogBox">

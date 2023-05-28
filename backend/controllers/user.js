@@ -210,6 +210,11 @@ exports.deleteProfile = async (req,res)=>{
         const followers = user.followers ;
         const following = user.following
         const userID = user._id
+
+        //removing avatar from cloudinary 
+        await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+
+
         await user.deleteOne() ;
         //logging out user after deleting profile
         res.cookie('token',null,{
@@ -235,8 +240,9 @@ exports.deleteProfile = async (req,res)=>{
         //delete all posts of the user 
         for(let i = 0 ;i < posts.length;i++) {
             const post = await Post.findById(posts[i]);
+            await cloudinary.v2.uploader.destroy(post.image.public_id);
             await post.deleteOne();
-        }
+        } 
         res.status(200).json({
             success:true,
             message:"Profile Deleted"

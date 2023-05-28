@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import './Login.css';
 import { Typography,Button } from '@mui/material';
 import {Link} from 'react-router-dom';
 import { loginUser } from '../../Actions/User';
+import { useAlert } from 'react-alert';
 
 const Login = props => {
 
+    const alert = useAlert();
+    const dispatch = useDispatch();
     //states
+    const {error} = useSelector((state)=>state.user);
+    const {message} = useSelector((state)=>state.like);
+
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const dispatch = useDispatch();
 
     
     //functions
@@ -18,6 +23,18 @@ const Login = props => {
         e.preventDefault();
         dispatch(loginUser(email,password));
     }
+
+    useEffect(()=>{
+        if(error){
+            alert.error(error);
+            dispatch({type:"clearErrors"})
+        }
+        if(message){
+            alert.success(message);
+            dispatch({type:"clearMessage"})
+        }
+    },[alert,error,dispatch]);
+
   return (
     <div className='login'>
         

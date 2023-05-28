@@ -164,3 +164,22 @@ export const updateProfile = (name,email,avatar)=> async (dispatch)=>{
         })
     }
 }
+//delete profile 
+export const deleteMyProfile = ()=> async (dispatch)=>{
+    try {
+        dispatch({
+            type:"deleteProfileRequest"
+        })
+        const {data}  = await axios.delete('/api/v1/delete/me');
+        dispatch({
+            type:"deleteProfileSuccess",
+            payload:data.user
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"deleteProfileFailure",
+            payload:error.response.data.message
+        })
+    }
+}
