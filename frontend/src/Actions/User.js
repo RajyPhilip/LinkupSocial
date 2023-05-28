@@ -183,3 +183,61 @@ export const deleteMyProfile = ()=> async (dispatch)=>{
         })
     }
 }
+//posts of the current user 
+export const getUserPosts =(id)=> async(dispatch)=>{
+    try {
+        dispatch({
+            type:"userPostsRequest",
+        });
+        const url = `/api/v1/userposts/${id}` ;
+        const response= await axios.get(url);
+        const userPosts = response.data.posts
+        dispatch({
+            type:"userPostsSuccess",
+            payload:userPosts,
+        });
+    } catch (error) {
+        dispatch({
+            type:"userPostsFailure",
+            payload: error.response.data.message
+        })
+    }
+}
+//posts of the current user 
+export const getUserProfile =(id)=> async(dispatch)=>{
+    try {
+        dispatch({
+            type:"userProfileRequest",
+        });
+        const url =  `/api/v1/user/${id}` ;
+        console.log('urlll',url)
+        const {data}= await axios.get(url);
+        console.log("data",data)
+        dispatch({
+            type:"userProfileSuccess",
+            payload:data.user,
+        });
+    } catch (error) {
+        dispatch({
+            type:"userProfileFailure",
+            payload: error.response.data.message
+        })
+    }
+}
+export const followAndUnfollowUser = (id) => async (dispatch) => {
+    try {
+        dispatch({
+            type: "followUserRequest",
+        });
+        const { data } = await axios.get(`/api/v1/follow/${id}`);
+        dispatch({
+            type: "followUserSuccess",
+            payload: data.message,
+        });
+    } catch (error) {
+        dispatch({
+            type: "followUserFailure",
+            payload: error.response.data.message,
+        });
+    }
+};

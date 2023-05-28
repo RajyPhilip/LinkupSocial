@@ -43,7 +43,7 @@ const Home = () => {
         <div className='homeleft'>
           {
             posts && posts.length > 0 ? posts.map((post)=>(
-              <Post key={post._id} postId={post._id}  postImage={"post.image.url"} likes={post.likes} comments={post.comments} ownerImage={'post.owner.avatar.url'} ownerName={post.owner.name} ownerId={post.owner._id} caption={post.caption}   />
+              <Post key={post._id} postId={post._id}  postImage={post.image.url} likes={post.likes} comments={post.comments} ownerImage={post.owner.avatar.url} ownerName={post.owner.name} ownerId={post.owner._id} caption={post.caption}   />
             )) :<Typography variant='h5'>No posts yet</Typography>
           }
         </div>

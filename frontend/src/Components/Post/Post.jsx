@@ -24,6 +24,7 @@ const Post = ({postId,caption,postImage,likes=[],comments=[],ownerImage,ownerNam
     const [captionToggle,setCaptionToggle] = useState(false);
 
 
+   
     //functions
     const handleLike = async()=>{
         

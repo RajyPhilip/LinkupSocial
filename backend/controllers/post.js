@@ -23,7 +23,7 @@ exports.createPost = async (req,res)=>{
         const user = await User.findById(req.user._id);
         user.posts.unshift(newPost._id);
         await user.save();
-        console.log('successfull',newPost)
+        
 
         res.status(201).json({
             success:true,

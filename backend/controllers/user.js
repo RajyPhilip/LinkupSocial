@@ -243,6 +243,27 @@ exports.deleteProfile = async (req,res)=>{
             await cloudinary.v2.uploader.destroy(post.image.public_id);
             await post.deleteOne();
         } 
+        // removing all comment of user from all post 
+        const allPosts = await Post.find();
+        for(let i=0 ;i<allPosts.length ;i++){
+            const post = await Post.findById(allPosts[i]._id);
+            for(let j=0 ; j< post.comments.length ;j++){
+                if(post.comments[j].user === userID){
+                    post.comments.splice(j,1)
+                }
+            }
+        }
+
+        // removing all like of user from all post 
+        for(let i=0 ;i<allPosts.length ;i++){
+            const post = await Post.findById(allPosts[i]._id);
+            for(let j=0 ; j< post.likes.length ;j++){
+                if(post.likes[j] === userID){
+                    post.likes.splice(j,1)
+                }
+            }
+            await post.save();
+        }
         res.status(200).json({
             success:true,
             message:"Profile Deleted"
@@ -306,10 +327,30 @@ exports.getAllUsers = async (req,res)=>{
         });
     }
 }
-//GET ALL USERS
+//GET my posts
 exports.getMyPosts = async (req,res)=>{
     try {
         const user = await User.findById(req.user._id).populate('posts');
+        const posts= [] ;
+        for(let i = 0 ;i <user.posts.length ;i++){
+            const post = await Post.findById(user.posts[i]).populate('likes comments.user owner');
+            posts.push(post);
+        }
+        res.status(200).json({
+            success:true,
+            posts
+        });
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
+}
+//GET my posts
+exports.getUserPosts = async (req,res)=>{
+    try {
+        const user = await User.findById(req.params.id);
         const posts= [] ;
         for(let i = 0 ;i <user.posts.length ;i++){
             const post = await Post.findById(user.posts[i]).populate('likes comments.user owner');
