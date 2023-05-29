@@ -12,6 +12,8 @@ import NewPost from './Components/NewPost/NewPost';
 import Register from './Components/Register/Register';
 import UpdateProfile from './Components/UpdateProfile/UpdateProfile';
 import UserProfile from './Components/UserProfile/UserProfile';
+import Search from './Components/Search/Search';
+import NotFound from './Components/NotFound/NotFound';
 
 function App() {
 
@@ -31,7 +33,8 @@ function App() {
           <Route path='/newpost' element={ isAuthenticated ? <NewPost /> : <Login />} />
           <Route path='/update/profile' element={ isAuthenticated ? <UpdateProfile /> : <Login />} />
           <Route path='/user/:id' element={ isAuthenticated ? <UserProfile /> : <Login />} />
-
+          <Route path='/search' element={ isAuthenticated ? <Search /> : <Login />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
     </Router>
   );

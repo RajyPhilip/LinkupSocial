@@ -106,12 +106,12 @@ export const getFollowingPosts =()=> async(dispatch)=>{
     }
 }
 //get all users
-export const getAllUsers =()=> async(dispatch)=>{
+export const getAllUsers =(name='')=> async(dispatch)=>{
     try {
         dispatch({
             type:"allUserRequest",
         });
-        const {data}= await axios.get('api/v1/users');
+        const {data}= await axios.get(`api/v1/users?name=${name}`);
         dispatch({
             type:"allUserSuccess",
             payload:data.users,
