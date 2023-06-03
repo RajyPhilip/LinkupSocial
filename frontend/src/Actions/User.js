@@ -210,9 +210,7 @@ export const getUserProfile =(id)=> async(dispatch)=>{
             type:"userProfileRequest",
         });
         const url =  `/api/v1/user/${id}` ;
-        console.log('urlll',url)
         const {data}= await axios.get(url);
-        console.log("data",data)
         dispatch({
             type:"userProfileSuccess",
             payload:data.user,

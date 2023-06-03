@@ -1,5 +1,6 @@
 const express= require('express');
 const app = express();
+const path = require('path');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({path:'./config/config.env'})
 
@@ -16,5 +17,10 @@ const userRoutes = require('./routes/user') ;
 app.use('/api/v1',postRoutes)
 app.use('/api/v1',userRoutes)
 
+// production env
+app.use(express.static(path.join(__dirname, "./client/build")));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, "./client/build/index.html"));
+})
 
 module.exports = app ;
